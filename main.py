@@ -49,10 +49,10 @@ def main():
             show_database(dict_config)
             # sort_nama()
         elif input_user == "2":
-            show_database()
-            filter_database()
+            show_database(dict_config)
+            filter_database(dict_config)
         elif input_user == "3":
-            show_database()
+            show_database(dict_config)
             add_data()
         elif input_user == "4":
             show_database()
