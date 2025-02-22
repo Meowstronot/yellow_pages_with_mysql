@@ -1,3 +1,26 @@
+from utils.data_utils import *
+
+# ------------------ Harus login ke MySQL terlebih dahulu
+while True:
+    host = input_not_null("Silahkan Masukan host MySQL :")
+    user = input_not_null("Silahkan Masukan user MySQL :")
+    password = input_not_null("Silahkan Masukan password MySQL :")
+    database = input_not_null("Silahkan Masukan database MySQL :")
+    #Configuration
+    dict_config = {
+                "host": host,
+                "user": user,
+                "password": password,
+                "database": database,
+                "cursorclass": pymysql.cursors.DictCursor # merubah output result menjadi list of dictionary
+                }
+    try:
+        connect_mysql(dict_config)
+        break
+    except:
+        print("Connection to MySQL failed!")
+
+
 def main():
     """Function for main program
     """
@@ -23,8 +46,8 @@ def main():
         input_user = input("Silahkan pilih menu yang ingin dijalankan: ")
 
         if input_user == "1":
-            show_database()
-            sort_nama()
+            show_database(dict_config)
+            # sort_nama()
         elif input_user == "2":
             show_database()
             filter_database()
