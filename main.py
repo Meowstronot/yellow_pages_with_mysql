@@ -1,11 +1,13 @@
 from utils.data_utils import *
+from utils.add_data import *
 
 # ------------------ Harus login ke MySQL terlebih dahulu
 while True:
     host = input_not_null("Silahkan Masukan host MySQL :")
     user = input_not_null("Silahkan Masukan user MySQL :")
     password = input_not_null("Silahkan Masukan password MySQL :")
-    database = input_not_null("Silahkan Masukan database MySQL :")
+    # database = input_not_null("Silahkan Masukan database MySQL :")
+    database = "yellow_pages"
     #Configuration
     dict_config = {
                 "host": host,
@@ -53,7 +55,7 @@ def main():
             filter_database(dict_config)
         elif input_user == "3":
             show_database(dict_config)
-            add_data()
+            add_data(dict_config)
         elif input_user == "4":
             show_database()
             update_data()
