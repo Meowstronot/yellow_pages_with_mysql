@@ -1,6 +1,7 @@
 from utils.data_utils import *
 from utils.add_data import *
 from utils.update_data import *
+from utils.delete_and_recycle_bin import *
 
 # ------------------ Harus login ke MySQL terlebih dahulu
 while True:
@@ -61,10 +62,10 @@ def main():
             show_database(dict_config)
             update_data(dict_config)
         elif input_user == "5":
-            show_database()
-            delete_data()
+            show_database(dict_config)
+            soft_delete(dict_config)
         elif input_user == "6":
-            recycle_bin_menu()
+            recycle_bin_menu(dict_config)
         elif input_user == "7":
             print("")
             print("Good bye!")
