@@ -1,0 +1,5 @@
+# Mengabaikan folder __pycache__
+__pycache__/
+
+# Mengabaikan folder utils/pyfolder/
+utils/__pycache__/
