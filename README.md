@@ -48,10 +48,11 @@ The target user of the Yellow Pages application is individuals who need to manag
 
 2. **Installation:**
     ```bash
-    git clone https://github.com/Meowstronot/yellow_pages_crud_program.git
-    cd yellow_pages_crud_program
-    pip install -r requirements.txt  # If using a requirements.txt file
+    git clone https://github.com/Meowstronot/yellow_pages_with_mysql.git
+    cd yellow_pages_with_mysql
+    pip install -r requirements.txt 
     ```
+3. **MySQL Preparation**
 
 ## Usage
 
