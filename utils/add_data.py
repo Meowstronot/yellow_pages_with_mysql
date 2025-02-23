@@ -1,6 +1,7 @@
 import pymysql
 import pymysql.cursors
 from utils.data_utils import *
+from utils.update_data import *
 import datetime as dt
 from tabulate import tabulate
 
@@ -145,11 +146,14 @@ def add_data(dict_config):
                 timpa = input("Apakah anda ingin mengganti data lama dengan data baru? (y/n): ")
 
                 if timpa == "y":
-                    database[index-1] = inputed_data
+                    # database[index-1] = inputed_data
+                    tuple_profil = (email, nama, nickname, jenis_kelamin, provinsi, kota, alamat, show_duplikat_database[0]["email"])
+                    tuple_contact = (email, kategori, catatan, nomor_hp)
+                    tuple_sosmed = (facebook, instagram, twitter, nomor_hp)
 
-
-                    # PR
-
+                    update_profil(dict_config, tuple_profil)
+                    update_contact(dict_config, tuple_contact)
+                    update_sosmed(dict_config, tuple_sosmed)
 
                     print("Perubahan data berhasil disimpan!")
                     return

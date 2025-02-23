@@ -1,5 +1,6 @@
 from utils.data_utils import *
 from utils.add_data import *
+from utils.update_data import *
 
 # ------------------ Harus login ke MySQL terlebih dahulu
 while True:
@@ -57,8 +58,8 @@ def main():
             show_database(dict_config)
             add_data(dict_config)
         elif input_user == "4":
-            show_database()
-            update_data()
+            show_database(dict_config)
+            update_data(dict_config)
         elif input_user == "5":
             show_database()
             delete_data()
