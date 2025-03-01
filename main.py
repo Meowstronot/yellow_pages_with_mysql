@@ -2,27 +2,10 @@ from utils.data_utils import *
 from utils.add_data import *
 from utils.update_data import *
 from utils.delete_and_recycle_bin import *
+from utils.mysql_login import *
 
-# ------------------ Harus login ke MySQL terlebih dahulu
-while True:
-    host = input_not_null("Silahkan Masukan host MySQL :")
-    user = input_not_null("Silahkan Masukan user MySQL :")
-    password = input_not_null("Silahkan Masukan password MySQL :")
-    # database = input_not_null("Silahkan Masukan database MySQL :")
-    database = "yellow_pages"
-    #Configuration
-    dict_config = {
-                "host": host,
-                "user": user,
-                "password": password,
-                "database": database,
-                "cursorclass": pymysql.cursors.DictCursor # merubah output result menjadi list of dictionary
-                }
-    try:
-        connect_mysql(dict_config)
-        break
-    except:
-        print("Connection to MySQL failed!")
+
+
 
 
 def main():
@@ -75,4 +58,15 @@ def main():
             print("Input is not valid !")
 
 if __name__ == "__main__":
+    # create, read, and validate MySQL configuratioon before main program
+    dict_config = mysql_configuration() 
+    try:
+        connect_mysql(dict_config)
+        # break
+    except:
+        print("Connection to MySQL failed!")
+        print("Please ensure that you have correctly entered your MySQL data and have run the 'yellow_pages_schema.sql'")
+        print("Reset Connection!")
+        reset_login_info()
+
     main()

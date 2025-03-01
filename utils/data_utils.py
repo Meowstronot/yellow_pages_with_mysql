@@ -4,24 +4,23 @@ from tabulate import tabulate
 # from test import dict_config
 
 def input_not_null(prompt:str) -> str:
-    """Funtion untuk membuat input box yang tidak boleh kosong
-
+    """Funtion to validate and create not null input
     Args:
-        prompt (str): Caption untuk input box
+        prompt (str): promt for input
 
     Returns:
-        str: nilai dari input box
+        str: value input
     """
     while True:
         user_input = input(prompt)
         if user_input == "" or user_input == None or user_input == " ":
-            print("Input box tidak boleh kosong. Silakan masukkan input lagi.")
+            print("Input is null, please try again!")
         else:
             return user_input
 
 
 def connect_mysql(dict_config):
-    """Function untuk login MySQL
+    """Function to login MySQL
     """
     try:
         conn = pymysql.connect(**dict_config) # ( ** ) = Unpacking nilai -> bisa memasukan jumlah custom parameter (*) = unpacking list/tuple, (**) -> Dict
@@ -36,18 +35,15 @@ def connect_mysql(dict_config):
         conn.close()
 
 def get_database_info(dict_config):
-   """function untuk mendapatkan Database Yellow Pages
-
+    """function to get Database Yellow Pages
     Args:
-        dict_config (dict): dictionary configuration untuk login MySQL
-
+        dict_config (dict): dictionary configuration MySQL
     Returns:
         str: list of dictionary data
     """
-   try:
+    try:
         conn = pymysql.connect(**dict_config) # ( ** ) = Unpacking nilai -> bisa memasukan jumlah custom parameter (*) = unpacking list/tuple, (**) -> Dict
         # print("Connection Success !")
-
         cursor = conn.cursor() # membuka gerbang akses mysql
 
         sql_query = """
@@ -65,32 +61,28 @@ def get_database_info(dict_config):
                         LEFT JOIN social_media s
                             ON c.phone_number = s.phone_number
                     """
-
         cursor.execute(query=sql_query)
         conn.commit() 
         hasil = cursor.fetchall()
         # print(tabulate(hasil, headers="keys", tablefmt="pipe"))
         return hasil
-   except Exception as e: # menangkap penyebab error dan menyimpan kedalam variabel e
+    except Exception as e: # menangkap penyebab error dan menyimpan kedalam variabel e
         print("Error !")
         conn.rollback()
         print(f"msg: {e}")
-   finally: # code yang selalu dijalankan meskipun error atau tidak
+    finally: # code yang selalu dijalankan meskipun error atau tidak
         conn.close()
 
 def show_database(dict_config):
-   """function untuk menampilkan Database Yellow Pages
-
+    """function to show Database Yellow Pages
     Args:
-        dict_config (dict): dictionary configuration untuk login MySQL
-
+        dict_config (dict): MySQL dictionary configuration 
     Returns:
         str: list of dictionary data
     """
-   try:
+    try:
         conn = pymysql.connect(**dict_config) # ( ** ) = Unpacking nilai -> bisa memasukan jumlah custom parameter (*) = unpacking list/tuple, (**) -> Dict
         # print("Connection Success !")
-
         cursor = conn.cursor() # membuka gerbang akses mysql
 
         sql_query = """
@@ -108,7 +100,6 @@ def show_database(dict_config):
                         LEFT JOIN social_media s
                             ON c.phone_number = s.phone_number
                     """
-
         cursor.execute(query=sql_query)
         conn.commit() 
         print("Commit Sucsess !")
@@ -116,22 +107,22 @@ def show_database(dict_config):
         print("Database Yellow Pages: ")
         hasil = cursor.fetchall()
         print(tabulate(hasil, headers="keys", tablefmt="pipe"))
-   except Exception as e: # menangkap penyebab error dan menyimpan kedalam variabel e
+    except Exception as e: # menangkap penyebab error dan menyimpan kedalam variabel e
         print("Error !")
         conn.rollback()
         print(f"msg: {e}")
-   finally: # code yang selalu dijalankan meskipun error atau tidak
+    finally: # code yang selalu dijalankan meskipun error atau tidak
         conn.close()
 
 
 def filter_database(dict_config):
-   """Filter Database berdasarkan menu pilihan
-   """
-   database = get_database_info(dict_config)
-   option = None
-   filtered_database = None
+    """Filter Database berdasarkan menu pilihan
+    """
+    database = get_database_info(dict_config)
+    option = None
+    filtered_database = None
 
-   while option != 6:
+    while option != 6:
 
       print("")
       print("1. Cari Kontak berdasarkan nomor HP")

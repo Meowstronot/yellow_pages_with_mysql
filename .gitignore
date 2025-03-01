@@ -3,3 +3,9 @@ __pycache__/
 
 # Mengabaikan folder utils/pyfolder/
 utils/__pycache__/
+
+# Mengabaikan file test
+utils/test.py
+
+# privasikan info login mysql user
+utils/mysql_login_info.csv
