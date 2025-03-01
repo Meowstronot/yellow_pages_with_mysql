@@ -1,4 +1,6 @@
 from utils.data_utils import *
+import pymysql
+import pymysql.cursors
 import os
 import csv
 
@@ -45,6 +47,7 @@ def create_dict_config()->dict:
                     "database": database,
                     "cursorclass": pymysql.cursors.DictCursor # merubah output result menjadi list of dictionary
                     }
+        # print(type(dict_config["cursorclass"]))  
         return dict_config
 
 def read_dict_from_csv(file_path:str)->dict:
@@ -60,6 +63,7 @@ def read_dict_from_csv(file_path:str)->dict:
             keys = next(reader) # membaca baris pertama sebagai keys
             values = next(reader) # membaca baris kedua sebagai values
             dict_config = dict(zip(keys, values)) # menggabungkan keys dan values menjadi dictionary
+            dict_config["cursorclass"] = pymysql.cursors.DictCursor # csv menyimpanya sebagai str bukan class
             # print(f"Data Configuration MySQL berhasil dibaca di lokasi: {file_path}")
             print(f"Configuration MySQL Data Successfully Read!")
             return dict_config

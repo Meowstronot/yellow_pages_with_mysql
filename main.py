@@ -5,9 +5,6 @@ from utils.delete_and_recycle_bin import *
 from utils.mysql_login import *
 
 
-
-
-
 def main():
     """Function for main program
     """
@@ -60,6 +57,7 @@ def main():
 if __name__ == "__main__":
     # create, read, and validate MySQL configuratioon before main program
     dict_config = mysql_configuration() 
+    # print(dict_config)
     try:
         connect_mysql(dict_config)
         # break
