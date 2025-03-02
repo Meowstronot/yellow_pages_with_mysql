@@ -1,7 +1,28 @@
 import pymysql
 import pymysql.cursors
 from tabulate import tabulate
+import pandas as pd
 # from test import dict_config
+
+def input_choose_num(prompt:str, min:int=1, max:int=10)-> int:
+    """Function to create and validate input for choosen number
+    Args:
+        promt (str): caption for input
+        min (int, optional): minimum number input. Defaults to 1.
+        max (int, optional): maximum number input.. Defaults to 10.
+    Returns:
+        int: valid number
+    """
+    while True:
+        user_input = input(prompt)
+        if user_input.isdigit():
+            user_input = int(user_input)
+            if user_input in range(min,max+1):
+                return user_input
+            else:
+                print("Input invalid!")
+        else:
+            print("Input invalid!")
 
 def input_not_null(prompt:str) -> str:
     """Funtion to validate and create not null input
@@ -48,18 +69,18 @@ def get_database_info(dict_config):
 
         sql_query = """
                     SELECT 	c.phone_number,
-                            p.*, 
-                            c.contact_category,
-                            c.notes,
-                            s.facebook,
-                            s.instagram,
-                            s.twitter,
-                            c.last_update
+                            p.*,
+                            cr.category,
+                            cr.notes,
+                            c.facebook,
+                            c.instagram,
+                            c.twitter,
+                            cr.last_update
                         FROM profil p
                         LEFT JOIN contact c
                             ON p.email = c.email
-                        LEFT JOIN social_media s
-                            ON c.phone_number = s.phone_number
+                        LEFT JOIN category cr
+                            ON c.phone_number = cr.phone_number
                     """
         cursor.execute(query=sql_query)
         conn.commit() 
@@ -87,18 +108,18 @@ def show_database(dict_config):
 
         sql_query = """
                     SELECT 	c.phone_number,
-                            p.*, 
-                            c.contact_category,
-                            c.notes,
-                            s.facebook,
-                            s.instagram,
-                            s.twitter,
-                            c.last_update
+                            p.*,
+                            cr.category,
+                            cr.notes,
+                            c.facebook,
+                            c.instagram,
+                            c.twitter,
+                            cr.last_update
                         FROM profil p
                         LEFT JOIN contact c
                             ON p.email = c.email
-                        LEFT JOIN social_media s
-                            ON c.phone_number = s.phone_number
+                        LEFT JOIN category cr
+                            ON c.phone_number = cr.phone_number
                     """
         cursor.execute(query=sql_query)
         conn.commit() 
@@ -106,6 +127,7 @@ def show_database(dict_config):
         print("")
         print("Database Yellow Pages: ")
         hasil = cursor.fetchall()
+        # print(hasil, type(hasil))
         print(tabulate(hasil, headers="keys", tablefmt="pipe"))
     except Exception as e: # menangkap penyebab error dan menyimpan kedalam variabel e
         print("Error !")
@@ -114,136 +136,101 @@ def show_database(dict_config):
     finally: # code yang selalu dijalankan meskipun error atau tidak
         conn.close()
 
+def filter_database(dict_config):
+    """Filter Database berdasarkan menu pilihan
+    """
+    database = get_database_info(dict_config)
+    df = pd.DataFrame(database)
+    
+
+
+
 
 def filter_database(dict_config):
     """Filter Database berdasarkan menu pilihan
     """
     database = get_database_info(dict_config)
+    df = pd.DataFrame(database)
     option = None
-    filtered_database = None
 
-    while option != 6:
+    menu = ["Find with phone_number",
+            "Find with email",
+            "Find with full_name",
+            "Find with nickname",
+            "Find with gender",
+            "Find with state",
+            "Find with city",
+            "Find with category",
+            "Return to main menu"]
+    print("")
+    for i, val in enumerate(menu):
+        i += 1
+        print(f"{i}. {val}")
 
-      print("")
-      print("1. Cari Kontak berdasarkan nomor HP")
-      print("2. Cari Kontak berdasarkan nama")
-      print("3. Cari Kontak berdasarkan kategori")
-      print("4. Cari Kontak berdasarkan provinsi")
-      print("5. Cari Kontak berdasarkan kota")
-      print("6. Kembali ke menu utama")
-      print("")
+    while option != 9:
+        option = input_choose_num("Please enter number 1-9: ",min=1, max=9)
+        selected_menu = menu[option-1].split()[-1]
 
-      # mencegah user memasukan input selain integer
-      while True:
-         option = input("Masukan pilihan menu: ")
-         try:
-               option = int(option)
-               break
-         except:
-               print("Silahkan masukan angka!")
+        if option == 1:
+            phone = input_not_null("Please enter phone number: ")
+            while phone.isdigit()!= True and (len(phone) != 12 or len(phone) != 13):
+                print("Input Invalid!")
+                phone = input_not_null("Please enter phone number: ")
+            filtered_df = df[df[selected_menu].str.contains(phone, case=False, na=False)]
+            print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+            return
 
-      if option == 1:
-         # filter berdasarkan string nomor hp
-         show_database(dict_config)
+        elif option == 2:
+            email = input_not_null("Please enter email: ")
+            filtered_df = df[df[selected_menu].str.contains(email, case=False, na=False)]
+            print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+            return
 
-         input_no = input("Silahkan masukan nomor HP untuk filter: ")
-         filtered_database = [item for item in database if input_no in item["phone_number"]]
+        elif option == 3:
+            full_name = input_not_null("Please enter full name: ")
+            filtered_df = df[df[selected_menu].str.contains(full_name, case=False, na=False)]
+            print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+            return
 
-         if filtered_database != []:
-            print("Hasil Filter: ")
-            print(tabulate(filtered_database, headers="keys", tablefmt="pipe"))
-            print("Filter Sukses!")
-         else:
-            print("")
-            print("Hasil Filter Kosong!")
-            print("")
+        elif option == 4:
+            nickname = input_not_null("Please enter nickname: ")
+            filtered_df = df[df[selected_menu].str.contains(nickname, case=False, na=False)]
+            print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+            return
 
-      elif option == 2:
-         # filter berdasarkan string nama
-         show_database(dict_config)
+        elif option == 5:
+            print("1. Male")
+            print("2. Female")
+            gender = input_choose_num("Please choose 1 or 2: ",1,2)
+            if gender == 1:
+                gender = "Male"
+            elif gender == 2:
+                gender = "Female"
+            print(tabulate(df[df[selected_menu]==gender], headers="keys", tablefmt="pipe"))
+            return
 
-         input_nama = input("Silahkan masukan nama untuk filter: ")
-         filtered_database = [item for item in database if input_nama.lower() in item["full_name"].lower()]
+        elif option == 6:
+            state = input_not_null("Please enter state: ")
+            filtered_df = df[df[selected_menu].str.contains(state, case=False, na=False)]
+            print(tabulate(filtered_df, headers="keys", tablefmt="pipe")) 
+            return
 
-         if filtered_database != []:
-            print("Hasil Filter: ")
-            print(tabulate(filtered_database, headers="keys", tablefmt="pipe"))
-            print("Filter Sukses!")
-         else:
-            print("")
-            print("Hasil Filter Kosong!")
-            print("")
+        elif option == 7:
+            city = input_not_null("Please enter city: ")
+            filtered_df = df[df[selected_menu].str.contains(city, case=False, na=False)]
+            print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+            return
 
-      elif option == 3:
-         # filter berdasarkan kategori
-         show_database(dict_config)
+        elif option == 8:
+            array_category = df["category"].unique()
+            for i, val in enumerate(array_category):
+                print(f"{i+1} {val}")
+            num_category = input_choose_num(f"Please enter 1-{i+1}: ",min=0, max=i+1)
+            selected_category = array_category[num_category-1]
+            print(tabulate(df[df[selected_menu]==selected_category], headers="keys", tablefmt="pipe"))
+            return
 
-         print("Kategori Kontak :")
-         print("1. Keluarga")
-         print("2. Teman Kerja")
-         print("3. Teman Kuliah")
-         print("4. Teman SMA")
-         print("5. Teman SMP")
-         print("6. Teman SD")
-         print("7. Teman Main")
-         print("")
-         list_kategori = ["Keluarga","Teman Kerja","Teman Kuliah","Teman SMA","Teman SMP","Teman SD","Teman Main"]
-         # mencegah user memasukan input selain integer
-         while True:
-            kategori = input("Silahkan pilih kategori untuk filter : ")
-            try:
-                  kategori = int(kategori)
-                  if kategori in range(1,8):
-                     break
-                  else:
-                      print("Silahkan masukan angka 1-7")
-                      continue
-            except:
-                  print("Silahkan masukan angka 1-7")
-            
-         filtered_database = [item for item in database if list_kategori[kategori-1].lower() in item["contact_category"].lower()]
-         if filtered_database != []:
-            print("Hasil Filter: ")
-            print(tabulate(filtered_database, headers="keys", tablefmt="pipe"))
-            print("Filter Sukses!")
-         else:
-            print("")
-            print("Hasil Filter Kosong!")
-            print("")
-
-      elif option == 4:
-         # filter berdasarkan string provinsi
-         show_database(dict_config)
-
-         provinsi = input("Silahkan masukan provinsi untuk filter: ")
-         filtered_database = [item for item in database if provinsi.lower() in item["state"].lower()]
-
-         if filtered_database != []:
-            print("Hasil Filter: ")
-            print(tabulate(filtered_database, headers="keys", tablefmt="pipe"))
-            print("Filter Sukses!")
-         else:
-            print("")
-            print("Hasil Filter Kosong!")
-            print("")
-
-      elif option == 5:
-         # filter berdasarkan string kota
-         show_database(dict_config)
-
-         kota = input("Silahkan masukan kota untuk filter: ")
-         filtered_database = [item for item in database if kota.lower() in item["city"].lower()]
-
-         if filtered_database != []:
-            print("Hasil Filter: ")
-            print(tabulate(filtered_database, headers="keys", tablefmt="pipe"))
-            print("Filter Sukses!")
-         else:
-            print("")
-            print("Hasil Filter Kosong!")
-            print("")
-
-      elif option == 6:
-          pass
-      else:
-          print("Input is not valid !")
+        elif option == 9:
+            return
+        else:
+            print("Input Invalid!")

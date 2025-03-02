@@ -5,7 +5,7 @@ __pycache__/
 utils/__pycache__/
 
 # Mengabaikan file test
-utils/test.py
+test.py
 
 # privasikan info login mysql user
 utils/mysql_login_info.csv
