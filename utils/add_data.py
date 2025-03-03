@@ -6,7 +6,9 @@ import datetime as dt
 from tabulate import tabulate
 
 def add_data(dict_config):
-        
+    """Function to add data
+    """
+
     database = get_database_info(dict_config)
     df = pd.DataFrame(database)
 

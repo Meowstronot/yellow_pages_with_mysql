@@ -76,190 +76,144 @@ def update_category(dict_config, tuple_value_3):
 
 
 def update_data(dict_config):
-    """Function untuk merubah data pada database
+    """Function to change data
     """
     print("")
-    print("Silahkan lengkapi informasi untuk mengubah data!")
+    print("Please enter the information to edit data!")
     print("")
 
     database = get_database_info(dict_config)
+    df = pd.DataFrame(database)
 
-    stop_loop = False # untuk control keluar nested loop
     while True: # looping untuk cari nomor lagi
 
         # 1. validasi input nomor hp
         while True:
-            nomor_hp = input("Masukan nomor HP data yang ingin diupdate: ")
-            if nomor_hp.isdigit() and (len(nomor_hp) == 12 or len(nomor_hp)== 13) :
-                #print("aman")
+            phone_number = input_not_null("Please enter phone number: ")
+            if phone_number.isdigit() and (len(phone_number) == 12 or len(phone_number)== 13) :
                 break
             else:
-                print("Nomor HP tidak valid!")
-        
+                print("Input Invalid!")
+
         # 2. cari data nomor hp
-        for i in range(0,len(database)):
+        old_df = df[df["phone_number"]==phone_number].copy()
+        filtered_df = df[df["phone_number"]==phone_number].copy()
 
-            if database[i]["phone_number"] == nomor_hp:
-                # show_filtered_database(nomor_hp,dict_config)
-                dict_old_fil_database = show_filtered_database(nomor_hp,dict_config)
-                dict_old_fil_database = dict_old_fil_database[0]
-                list_profil = [dict_old_fil_database["email"], dict_old_fil_database["full_name"], dict_old_fil_database["nickname"], 
-                                dict_old_fil_database["gender"], dict_old_fil_database["state"], dict_old_fil_database["city"], 
-                                dict_old_fil_database["address"],dict_old_fil_database["email"]]
-                list_contact = [dict_old_fil_database["email"], dict_old_fil_database["contact_category"],
-                                 dict_old_fil_database["notes"], dict_old_fil_database["phone_number"]]
-                list_sosmed =  [dict_old_fil_database["facebook"], dict_old_fil_database["instagram"],
-                                 dict_old_fil_database["twitter"],dict_old_fil_database["phone_number"]]
+        # 3. eksekusi edit
+        if filtered_df.empty == False:
+            # show 
+            print("Contact Found:")
+            print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+            # select edited menu
+            menu = ["email",
+                    "full_name",
+                    "nickname",
+                    "gender",
+                    "state",
+                    "city",
+                    "address",
+                    "category",
+                    "notes",
+                    "facebook",
+                    "instagram",
+                    "twitter",
+                    "Return to main menu"]
+            print("")
+            for i, val in enumerate(menu):
+                i += 1
+                print(f"{i}. {val}")
+            option = None
+            while option != len(menu):
 
-                print("1. Email")
-                print("2. Nama Lengkap")
-                print("3. Nickname")
-                print("4. Jenis Kelamin")
-                print("5. Provinsi")
-                print("6. Kota")
-                print("7. Alamat")
-                print("8. Kategori Kontak")
-                print("9. Catatan")
-                print("10. Facebook")
-                print("11. Instagram")
-                print("12. Twitter")
-                print("13. Cancel")
-                # validasi input
-                while True:
-                    option = input("Silahkan pilih kolom yang ingin di update: ")
-                    try:
-                        option = int(option)
-                        if option in range(1,14):
-                            break
-                        else:
-                            print("Silahkan masukan angka 1-13")
-                            continue
-                    except:
-                        print("Silahkan masukan angka 1-13")
-                
+                option = input_choose_num(f"Please select column to edit (1-{len(menu)}): ",min=1, max=len(menu))
+                selected_menu = menu[option-1]
+                print(selected_menu)
+
                 if option == 1:
-                    while True:
-                        email = input("Silahkan masukan email: ")
-                        if email == "":
-                            print("Email masih kosong")
-                        else:
-                            break
-                    list_profil[0]=email
-                    list_contact[0]=email
-
+                    new_email = input_not_null("Please enter new email: ")
+                    filtered_df[selected_menu] = new_email
+                
                 elif option == 2:
-                    while True:
-                        nama = input("Silahkan masukan nama: ")
-                        if nama == "" or nama[0].isdigit() :
-                            print("Input tidak valid")
-                        else:
-                            break
-                    list_profil[1] = nama
+                    new_full_name = input_not_null("Please enter new full name: ")
+                    filtered_df[selected_menu] = new_full_name  
 
                 elif option == 3:
-                    nickname = input("Silahkan masukan nickname: ")
-                    list_profil[2] = nickname
-
+                    new_nickname = input("Please enter new nickname : ")
+                    filtered_df[selected_menu] = new_nickname  
+                
                 elif option == 4:
-                    while True:
-                        print("1. Laki-laki")
-                        print("2. Perempuan")
-                        jenis_kelamin = input("Silahkan pilih kelamin :")
-                        if jenis_kelamin.lower() == "1" or jenis_kelamin == "2":
-                            if jenis_kelamin == "1":
-                                jenis_kelamin = "Laki-laki"
-                            elif jenis_kelamin == "2":
-                                jenis_kelamin = "Perempuan"
-                            #print("aman")
-                            break
-                        else:
-                            print("Input tidak valid!")
-                    list_profil[3] = jenis_kelamin
+                    print("1. Male")
+                    print("2. Female")
+                    new_gender = input_choose_num("Please choose 1 or 2: ",1,2)
+                    new_gender = "Male" if new_gender == 1 else "Female"
+                    filtered_df[selected_menu] = new_gender
 
                 elif option == 5:
-                    while True:
-                        provinsi = input("Silahkan masukan provinsi: ")
-                        if provinsi == "":
-                            print("provinsi masih kosong")
-                        else:
-                            break
-                    list_profil[4] = provinsi
+                    new_state = input_not_null("Please enter new state : ")
+                    filtered_df[selected_menu] = new_state  
 
                 elif option == 6:
-                    while True:
-                        kota = input("Silahkan masukan kota: ")
-                        if kota == "":
-                            print("kota masih kosong")
-                        else:
-                            break
-                    list_profil[5] = kota
+                    new_city = input_not_null("Please enter new city : ")
+                    filtered_df[selected_menu] = new_city  
 
                 elif option == 7:
-                    alamat = input("Silahkan masukan alamat: ")
-                    list_profil[6] = alamat
-
+                    new_address = input("Please enter new adddress : ")
+                    filtered_df[selected_menu] = new_address  
+                
                 elif option == 8:
-                    while True:
-                        print("Kategori Kontak :")
-                        print("1. Keluarga")
-                        print("2. Teman Kerja")
-                        print("3. Teman Kuliah")
-                        print("4. Teman SMA")
-                        print("5. Teman SMP")
-                        print("6. Teman SD")
-                        print("7. Teman Main")
-                        print("")
-                        list_kategori = ["Keluarga","Teman Kerja","Teman Kuliah","Teman SMA","Teman SMP","Teman SD","Teman Main"]
-                        kategori = input("Silahkan pilih kategori : ")
-                        try:
-                            kategori = int(kategori)
-                            if kategori in range(1,8):
-                                kategori = list_kategori[kategori-1]
-                                break
-                            else:
-                                print("Silahkan masukan angka 1-7")
-                                continue
-                        except:
-                            print("Silahkan masukan angka 1-7")
-                    list_contact[1] = kategori
-
+                    array_category = df["category"].unique()
+                    for i, val in enumerate(array_category):
+                        print(f"{i+1} {val}")
+                    print(f"{i+2} add new category")
+                    num_category = input_choose_num(f"Please select category contact 1-{i+2}: ",min=1, max=i+2)
+                    if num_category == (i+2):
+                        new_category = input_not_null("Please enter new category: ").title()
+                    else:
+                        new_category = array_category[num_category-1]
+                    filtered_df[selected_menu] = new_category  
+            
                 elif option == 9:
-                    catatan = input("Silahkan masukan catatan: ")
-                    list_contact[2] = catatan
+                    new_notes = input("Please enter new notes : ")
+                    filtered_df[selected_menu] = new_notes  
 
                 elif option == 10:
-                    Facebook = input("Silahkan masukan Facebook: ")
-                    list_sosmed[0] = Facebook
+                    new_facebook = input("Please enter new facebook : ")
+                    filtered_df[selected_menu] = new_facebook  
 
                 elif option == 11:
-                    Instagram = input("Silahkan masukan Instagram: ")
-                    list_sosmed[1] = Instagram
+                    new_instagram = input("Please enter new instagram : ")
+                    filtered_df[selected_menu] = new_instagram  
 
                 elif option == 12:
-                    Twitter = input("Silahkan masukan Twitter: ")
-                    list_sosmed[2] = Twitter
+                    new_twitter = input("Please enter new twitter : ")
+                    filtered_df[selected_menu] = new_twitter  
 
                 elif option == 13:
-                    print("Update Data Canceled!")
-                    return
+                    print("Update data canceled!")
 
-                update_profil(dict_config, tuple(list_profil))
-                update_contact(dict_config, tuple(list_contact))
-                update_sosmed(dict_config, tuple(list_sosmed))
-                print("Data Sukses diupdate")
-                stop_loop = True
-                break #exit loop cari nomor hp
+                filtered_df["last_update"] = dt.datetime.now()
+                print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
 
+                tuple_profil = (filtered_df["email"].item(), filtered_df["full_name"].item(), filtered_df["nickname"].item(), 
+                                filtered_df["gender"].item(), filtered_df["state"].item(), filtered_df["city"].item(), 
+                                filtered_df["address"].item(), old_df["email"].item())
+                tuple_contact = (filtered_df["email"].item(), filtered_df["facebook"].item(), filtered_df["instagram"].item(), filtered_df["twitter"].item(), filtered_df["phone_number"].item())
+                tuple_category = (filtered_df["category"].item(), filtered_df["notes"].item(), filtered_df["phone_number"].item())
+                # print(tuple_profil)
+                # print(tuple_contact)
+                # print(tuple_category)
+                update_profil(dict_config, tuple_profil)
+                update_contact(dict_config, tuple_contact)
+                update_category(dict_config, tuple_category)
+
+                print("Successfully update!")
+                return
         else:
-            print("Nomor HP tidak ditemukan!")
-            # 3. loop untuk cari lagi
+            print("Data of phone number not found!")
+            # 4. loop untuk cari lagi
             while True:
-                cari_lagi = input("Ingin mencari lagi? (y/n) :")
+                cari_lagi = input("Try again? (y/n) :")
                 if cari_lagi.lower() == "y":
                     break
                 elif cari_lagi.lower() == "n":
-                    stop_loop=True
-                    break
-        
-        if stop_loop:
-            break
+                    return

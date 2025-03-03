@@ -21,7 +21,7 @@ def main():
         print("1. Show Contact Data")
         print("2. Find Contact")
         print("3. Add Contact")
-        print("4. Update Data kontak")
+        print("4. Update Contact Data")
         print("5. Hapus Data Kontak")
         print("6. Recycle Bin")
         print("7. Exit Program")
