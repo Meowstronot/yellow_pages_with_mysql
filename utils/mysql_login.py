@@ -138,7 +138,7 @@ def reset_login_info():
 
 
 def mysql_configuration()->dict:
-    """Function to generate MySQL configuration
+    """Function to generate MySQL configuration csv file
 
     Returns:
         dict: MySQL configuration

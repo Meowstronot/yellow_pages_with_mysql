@@ -37,7 +37,7 @@ def update_profil(dict_config, tuple_value_8):
         conn.rollback()
         print(f"msg: {e}") 
 
-def update_contact(dict_config, tuple_value_4):
+def update_contact(dict_config, tuple_value_5):
     try:
         conn = pymysql.connect(**dict_config)
         cursor = conn.cursor()
@@ -45,30 +45,30 @@ def update_contact(dict_config, tuple_value_4):
                     UPDATE contact c
                     SET 
                         c.email = %s,
-                        c.contact_category = %s,
-                        c.notes = %s,
-                        c.last_update = NOW()
+                        c.facebook = %s,
+                        c.instagram = %s,
+                        c.twitter = %s
                     WHERE c.phone_number = %s
                     """ 
-        cursor.execute(query=sql_query, args=tuple_value_4)
+        cursor.execute(query=sql_query, args=tuple_value_5)
         conn.commit()
     except Exception as e:
         conn.rollback()
         print(f"msg: {e}") 
 
-def update_sosmed(dict_config, tuple_value_4):
+def update_category(dict_config, tuple_value_3):
     try:
         conn = pymysql.connect(**dict_config)
         cursor = conn.cursor()
         sql_query = """
-                    UPDATE social_media s
+                    UPDATE category c
                     SET 
-                        s.facebook= %s,
-                        s.instagram= %s,
-                        s.twitter= %s
+                        c.category= %s,
+                        c.notes= %s,
+                        c.last_update= NOW()
                     WHERE phone_number = %s
                     """ 
-        cursor.execute(query=sql_query, args=tuple_value_4)
+        cursor.execute(query=sql_query, args=tuple_value_3)
         conn.commit()
     except Exception as e:
         conn.rollback()

@@ -51,4 +51,4 @@ CREATE TABLE IF NOT EXISTS recycle_bin(
     instagram VARCHAR(50),
     twitter VARCHAR(50),
     last_update DATETIME NOT NULL
-)
+);

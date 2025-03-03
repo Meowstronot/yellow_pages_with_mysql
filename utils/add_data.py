@@ -6,190 +6,120 @@ import datetime as dt
 from tabulate import tabulate
 
 def add_data(dict_config):
-    """
-    Function untuk add data baru ke database
-    Jika data sudah ada maka bisa di update dengan yang baru
-    """
+        
+    database = get_database_info(dict_config)
+    df = pd.DataFrame(database)
+
     print("")
-    print("Silahkan isi Data Kontak untuk dimasukan kedalam Database: ")
+    print("Please complete contact information: ")
     print("")
 
-
+    #_______________________________Input new data______________________________________1
     while True:
-        nomor_hp = input("Silahkan masukan nomor HP: ")
-        if nomor_hp.isdigit() and (len(nomor_hp) == 12 or len(nomor_hp)== 13) :
-            #print("aman")
+        phone_number = input_not_null("Please enter phone number: ")
+        if phone_number.isdigit() and (len(phone_number) == 12 or len(phone_number)== 13) :
             break
         else:
-            print("Nomor HP tidak valid!")
+            print("Input Invalid!")
 
-    while True:
-        email = input("Silahkan masukan email: ")
-        if email == "":
-            print("Email masih kosong")
-        else:
-            break
+    email = input_not_null("Please enter email: ").lower()
+    full_name = input_not_null("Please enter full name: ").title()
+    nickname = input("Please enter nickname (optional): ").title()
+
+    print("1. Male")
+    print("2. Female")
+    gender = input_choose_num("Please choose 1 or 2: ",1,2)
+    gender = "Male" if gender == 1 else "Female"
+
+    state = input_not_null("Please enter state: ").title()
+    city = input_not_null("Please enter city: ").title()
+    address = input("Please enter address (optional): ").title()
+
+    array_category = df["category"].unique()
+    for i, val in enumerate(array_category):
+        print(f"{i+1} {val}")
+    print(f"{i+2} add new category")
+    num_category = input_choose_num(f"Please select category contact 1-{i+2}: ",min=1, max=i+2)
+    if num_category == (i+2):
+        category = input_not_null("Please enter new category: ").title()
+    else:
+        category = array_category[num_category-1]
     
-    while True:
-        nama = input("Silahkan masukan nama: ")
-        if nama == "" or nama[0].isdigit() :
-            print("Input tidak valid")
-        else:
-            break
+    notes = input("Please enter notes (optional): ").title()
+    facebook = input("Please enter facebook (optional): ").title()
+    instagram = input("Please enter instagram (optional): ").title()
+    twitter = input("Please enter twitter (optional): ").title()
 
-    nickname = input("Tambahkan nickname pada kontak (optional): ")
-            
-    while True:
-        print("1. Laki-laki")
-        print("2. Perempuan")
-        jenis_kelamin = input("Silahkan pilih kelamin :")
-        if jenis_kelamin.lower() == "1" or jenis_kelamin == "2":
-            
-            if jenis_kelamin == "1":
-                jenis_kelamin = "Laki-laki"
-            elif jenis_kelamin == "2":
-                jenis_kelamin = "Perempuan"
-            #print("aman")
-            break
-        else:
-            print("Input tidak valid!")
-    
-    while True:
-        provinsi = input("Silahkan masukan provinsi: ")
-        if provinsi == "":
-            print("Provinsi masih kosong")
-        else:
-            break
-
-    while True:
-        kota = input("Silahkan masukan kota: ")
-        if kota == "":
-            print("Kota masih kosong")
-        else:
-            break
-
-    alamat = input("Silahkan masukan alamat lengkap (optional): ")
-
-    while True:
-         print("Kategori Kontak :")
-         print("1. Keluarga")
-         print("2. Teman Kerja")
-         print("3. Teman Kuliah")
-         print("4. Teman SMA")
-         print("5. Teman SMP")
-         print("6. Teman SD")
-         print("7. Teman Main")
-         print("")
-         list_kategori = ["Keluarga","Teman Kerja","Teman Kuliah","Teman SMA","Teman SMP","Teman SD","Teman Main"]
-
-         kategori = input("Silahkan pilih kategori : ")
-         try:
-            kategori = int(kategori)
-            if kategori in range(1,8):
-                kategori = list_kategori[kategori-1]
-                break
-            else:
-                print("Silahkan masukan angka 1-7")
-                continue
-         except:
-            print("Silahkan masukan angka 1-7")
-
-    catatan = input("Tambahkan catatan pada kontak(optional): ")
-    facebook = input("Tambahkan facebook pada kontak(optional): ")
-    instagram = input("Tambahkan instagram pada kontak(optional): ")
-    twitter = input("Tambahkan twitter pada kontak(optional): ")
-
-    last_update = dt.datetime.now()
-
-    inputed_data = [{"phone_number": nomor_hp,
+    inputed_data = [{"phone_number": phone_number,
                     "email": email,
-                    "full_name": nama,
+                    "full_name": full_name,
                     "nickname": nickname,
-                    "gender": jenis_kelamin,
-                    "state":provinsi,
-                    "city": kota,
-                    "address":alamat,
-                    "contact_category":kategori,
-                    "notes":catatan,
+                    "gender": gender,
+                    "state":state,
+                    "city": city,
+                    "address":address,
+                    "category":category,
+                    "notes":notes,
                     "facebook":facebook,
                     "instagram":instagram,
-                    "twitter":twitter,
-                    "last_update": last_update.strftime("%Y-%m-%d %H:%M:%S")}]
-    print(tabulate(inputed_data, headers="keys", tablefmt="pipe"))
+                    "twitter":twitter}]
+    
+    #_______________________________check duplicate______________________________________2
+    if df[df["phone_number"]==phone_number].empty == False:
 
-    ask_add = None
-    while True:
-        ask_add = input("Apakah ingin menyimpannya ke database? (y/n) :")
-        if ask_add.lower() == "y":
-            break
-        elif ask_add.lower() == "n":
-            return
+        print("\nThe contact you inputed alreay exist!")
+        show_duplikat_database = [item for item in database if phone_number in item["phone_number"]]
+        print("Old data :")
+        print(tabulate(show_duplikat_database, headers="keys", tablefmt="pipe"))
+        print("New inputed data :")
+        print(tabulate(inputed_data, headers="keys", tablefmt="pipe"))
 
-    # cek duplikat pada database
-    index = 0
-    database = get_database_info(dict_config)
-    for data in database:
-        index += 1
+        timpa = None
+        while True:
+            timpa = input("\nDid you want to replace the old data to the new data? (y/n): ")
 
-        if data["phone_number"] == nomor_hp:
+            if timpa == "y":
+                tuple_profil = (email, full_name, nickname, gender, state, city, address, show_duplikat_database[0]["email"])
+                tuple_contact = (email, facebook, instagram, twitter, phone_number)
+                tuple_category = (category, notes, phone_number)
+                update_profil(dict_config, tuple_profil)
+                update_contact(dict_config, tuple_contact)
+                update_category(dict_config, tuple_category)
+                print("Successfully Saved!")
+                return
+            elif timpa == "n":
+                print("Data not replaced!")
+                return
+            else:
+                print("Input invalid!")      
 
-            print("")
-            print("Data dari nomor HP yang anda masukan sudah ada!")
-            show_duplikat_database = [item for item in database if nomor_hp in item["phone_number"]]
-            print("Data lama :")
-            print(tabulate(show_duplikat_database, headers="keys", tablefmt="pipe"))
-            print("Data baru yang diinput :")
-            print(tabulate(inputed_data, headers="keys", tablefmt="pipe"))
+    else:
+        try:
+                conn = pymysql.connect(**dict_config)
+                # print("Connection Success !")
+                cursor = conn.cursor() 
+                sql_query_profil = """
+                            INSERT INTO profil(email, full_name, nickname, gender, state, city, address)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s)
+                            """
+                cursor.execute(query=sql_query_profil, args=(email, full_name, nickname, gender, state, city, address))
+                sql_query_contact = """
+                            INSERT INTO contact(phone_number, email, facebook, instagram, twitter)
+                            VALUES (%s, %s, %s, %s, %s)
+                            """
+                cursor.execute(query=sql_query_contact, args=(phone_number, email, facebook, instagram, twitter))
+                sql_query_category = """
+                            INSERT INTO category(phone_number, category, notes, last_update)
+                            VALUES (%s, %s, %s, NOW())
+                            """
+                cursor.execute(query=sql_query_category, args=(phone_number, category, notes))
 
-            timpa = None
-            while True:
-                timpa = input("Apakah anda ingin mengganti data lama dengan data baru? (y/n): ")
-
-                if timpa == "y":
-                    # database[index-1] = inputed_data
-                    tuple_profil = (email, nama, nickname, jenis_kelamin, provinsi, kota, alamat, show_duplikat_database[0]["email"])
-                    tuple_contact = (email, kategori, catatan, nomor_hp)
-                    tuple_sosmed = (facebook, instagram, twitter, nomor_hp)
-
-                    update_profil(dict_config, tuple_profil)
-                    update_contact(dict_config, tuple_contact)
-                    update_sosmed(dict_config, tuple_sosmed)
-
-                    print("Perubahan data berhasil disimpan!")
-                    return
-                elif timpa == "n":
-                    print("Perubahan data tidak disimpan!")
-                    return
-                else:
-                    print("Input invalid!")          
-            
-    # jika tidak ada data duplikat maka akan add data
-    try:
-            conn = pymysql.connect(**dict_config) # ( ** ) = Unpacking nilai -> bisa memasukan jumlah custom parameter (*) = unpacking list/tuple, (**) -> Dict
-            # print("Connection Success !")
-            cursor = conn.cursor() # membuka gerbang akses mysql
-            sql_query_profil = """
-                        INSERT INTO profil(email, full_name, nickname, gender, state, city, address)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s)
-                        """
-            cursor.execute(query=sql_query_profil, args=(email, nama, nickname, jenis_kelamin, provinsi, kota, alamat))
-            sql_query_contact = """
-                        INSERT INTO contact(phone_number, email, contact_category, notes, last_update)
-                        VALUES (%s, %s, %s, %s, %s)
-                        """
-            cursor.execute(query=sql_query_contact, args=(nomor_hp, email, kategori, catatan, last_update))
-            sql_query_sosmend = """
-                        INSERT INTO social_media(phone_number, facebook, instagram, twitter)
-                        VALUES (%s, %s, %s, %s)
-                        """
-            cursor.execute(query=sql_query_sosmend, args=(nomor_hp, facebook, instagram, twitter))
-
-            conn.commit() 
-            # return hasil
-            print("Data Sukses masuk database!")
-    except Exception as e: # menangkap penyebab error dan menyimpan kedalam variabel e
-            print("Error !")
-            conn.rollback()
-            print(f"msg: {e}")
-    finally: # code yang selalu dijalankan meskipun error atau tidak
-            conn.close()
+                conn.commit() 
+                # return hasil
+                print("Contact successfully saved!")
+        except Exception as e:
+                print("Error !")
+                conn.rollback()
+                print(f"msg: {e}")
+        finally:
+                conn.close()

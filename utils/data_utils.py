@@ -143,9 +143,6 @@ def filter_database(dict_config):
     df = pd.DataFrame(database)
     
 
-
-
-
 def filter_database(dict_config):
     """Filter Database berdasarkan menu pilihan
     """
@@ -225,7 +222,7 @@ def filter_database(dict_config):
             array_category = df["category"].unique()
             for i, val in enumerate(array_category):
                 print(f"{i+1} {val}")
-            num_category = input_choose_num(f"Please enter 1-{i+1}: ",min=0, max=i+1)
+            num_category = input_choose_num(f"Please enter 1-{i+1}: ",min=1, max=i+1)
             selected_category = array_category[num_category-1]
             print(tabulate(df[df[selected_menu]==selected_category], headers="keys", tablefmt="pipe"))
             return
