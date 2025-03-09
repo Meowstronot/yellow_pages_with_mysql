@@ -127,18 +127,18 @@ def update_data(dict_config):
 
                 option = input_choose_num(f"Please select column to edit (1-{len(menu)}): ",min=1, max=len(menu))
                 selected_menu = menu[option-1]
-                print(selected_menu)
+                # print(selected_menu)
 
                 if option == 1:
                     new_email = input_not_null("Please enter new email: ")
                     filtered_df[selected_menu] = new_email
                 
                 elif option == 2:
-                    new_full_name = input_not_null("Please enter new full name: ")
+                    new_full_name = input_not_null("Please enter new full name: ").title()
                     filtered_df[selected_menu] = new_full_name  
 
                 elif option == 3:
-                    new_nickname = input("Please enter new nickname : ")
+                    new_nickname = input("Please enter new nickname : ").title()
                     filtered_df[selected_menu] = new_nickname  
                 
                 elif option == 4:
@@ -149,15 +149,15 @@ def update_data(dict_config):
                     filtered_df[selected_menu] = new_gender
 
                 elif option == 5:
-                    new_state = input_not_null("Please enter new state : ")
+                    new_state = input_not_null("Please enter new state : ").title()
                     filtered_df[selected_menu] = new_state  
 
                 elif option == 6:
-                    new_city = input_not_null("Please enter new city : ")
+                    new_city = input_not_null("Please enter new city : ").title()
                     filtered_df[selected_menu] = new_city  
 
                 elif option == 7:
-                    new_address = input("Please enter new adddress : ")
+                    new_address = input("Please enter new adddress : ").title()
                     filtered_df[selected_menu] = new_address  
                 
                 elif option == 8:
@@ -173,7 +173,7 @@ def update_data(dict_config):
                     filtered_df[selected_menu] = new_category  
             
                 elif option == 9:
-                    new_notes = input("Please enter new notes : ")
+                    new_notes = input("Please enter new notes : ").title()
                     filtered_df[selected_menu] = new_notes  
 
                 elif option == 10:

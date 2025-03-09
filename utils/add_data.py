@@ -2,6 +2,7 @@ import pymysql
 import pymysql.cursors
 from utils.data_utils import *
 from utils.update_data import *
+from utils.delete_and_recycle_bin import *
 import datetime as dt
 from tabulate import tabulate
 
@@ -48,9 +49,9 @@ def add_data(dict_config):
         category = array_category[num_category-1]
     
     notes = input("Please enter notes (optional): ").title()
-    facebook = input("Please enter facebook (optional): ").title()
-    instagram = input("Please enter instagram (optional): ").title()
-    twitter = input("Please enter twitter (optional): ").title()
+    facebook = input("Please enter facebook (optional): ")
+    instagram = input("Please enter instagram (optional): ")
+    twitter = input("Please enter twitter (optional): ")
 
     inputed_data = [{"phone_number": phone_number,
                     "email": email,
@@ -81,6 +82,7 @@ def add_data(dict_config):
             timpa = input("\nDid you want to replace the old data to the new data? (y/n): ")
 
             if timpa == "y":
+                send_to_recycle_bin(dict_config, phone_number)
                 tuple_profil = (email, full_name, nickname, gender, state, city, address, show_duplikat_database[0]["email"])
                 tuple_contact = (email, facebook, instagram, twitter, phone_number)
                 tuple_category = (category, notes, phone_number)
