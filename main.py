@@ -8,49 +8,52 @@ from utils.mysql_login import *
 def main():
     """Function for main program
     """
-    input_user = None
-
-    while input_user != "7":
-        
-        print("""
+    print("""
 ░█──░█ ░█▀▀▀ ░█─── ░█─── ░█▀▀▀█ ░█──░█ 　 ░█▀▀█ ─█▀▀█ ░█▀▀█ ░█▀▀▀ ░█▀▀▀█ 　 █▀▀█ █▀▀█ █▀▀█ █▀▀▀ █▀▀█ █▀▀█ █▀▄▀█ 
 ░█▄▄▄█ ░█▀▀▀ ░█─── ░█─── ░█──░█ ░█░█░█ 　 ░█▄▄█ ░█▄▄█ ░█─▄▄ ░█▀▀▀ ─▀▀▀▄▄ 　 █──█ █▄▄▀ █──█ █─▀█ █▄▄▀ █▄▄█ █─▀─█ 
 ──░█── ░█▄▄▄ ░█▄▄█ ░█▄▄█ ░█▄▄▄█ ░█▄▀▄█ 　 ░█─── ░█─░█ ░█▄▄█ ░█▄▄▄ ░█▄▄▄█ 　 █▀▀▀ ▀─▀▀ ▀▀▀▀ ▀▀▀▀ ▀─▀▀ ▀──▀ ▀───▀""")
-        print("")
-        print("List Menu :")
-        print("1. Show Contact Data")
-        print("2. Find Contact")
-        print("3. Add Contact")
-        print("4. Update Contact Data")
-        print("5. Hapus Data Kontak")
-        print("6. Recycle Bin")
-        print("7. Exit Program")
-        print("")
+    print("")
+    print("List Menu :")
 
-        input_user = input("Please select the menu: ")
+    menu = ["Show Contact Data",
+            "Find Contact",
+            "Add Contact",
+            "Update Contact Data",
+            "Delete Contact Data",
+            "Recycle Bin",
+            "Reset info login",
+            "Exit Program",]
 
-        if input_user == "1":
+
+    input_user = None
+    while input_user != len(menu):
+        print("")
+        for i, val in enumerate(menu,1):
+            print(f"{i}. {val}")
+        input_user = input_choose_num(f"Please select the menu: ",min=1, max=i)
+
+        if input_user == 1:
             show_database(dict_config)
-            # sort_nama()
-        elif input_user == "2":
+        elif input_user == 2:
             show_database(dict_config)
             filter_database(dict_config)
-        elif input_user == "3":
+        elif input_user == 3:
             show_database(dict_config)
             add_data(dict_config)
-        elif input_user == "4":
+        elif input_user == 4:
             show_database(dict_config)
             update_data(dict_config)
-        elif input_user == "5":
+        elif input_user == 5:
             show_database(dict_config)
             soft_delete(dict_config)
-        elif input_user == "6":
+        elif input_user == 6:
             recycle_bin_menu(dict_config)
-        elif input_user == "7":
+        elif input_user == 7:
+            reset_login_info()
+        elif input_user == 8:
             print("")
             print("Good bye!")
             print("")
-            
         else:
             print("Input is not valid !")
 

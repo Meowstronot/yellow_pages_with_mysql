@@ -139,6 +139,8 @@ def restore_recycle_bin(dict_config, phone_number):
 
 def recycle_bin_menu(dict_config):
     """Function to access recycle bin
+    Args:
+        dict_config (dict): Dictionary configuration for MySQL login.
     """
     recycle_bin_storage = show_database_recyclebin(dict_config)
     main_storage = get_database_info(dict_config)
@@ -205,9 +207,7 @@ def delete_permanen(dict_config, email, phone_number, id_ryc=None):
         email (str): Email of the contact to be deleted.
         phone_number (str): Phone number of the contact to be deleted.
         id_ryc (int): id recycle bin
-        on_main (bool, optional): True = Delete original data, False = Delete data from Recycle Bin. Defaults to False.
     """
-
     if id_ryc != None: 
         try: # recycle_bin
             conn = pymysql.connect(**dict_config)
@@ -276,7 +276,7 @@ def soft_delete(dict_config, email=None, phone_number=None):
     while True:
         if phone_number == None:
             while True:
-                phone_number = input_not_null("Please enter phone number: ")
+                phone_number = input_not_null("Please enter phone number to soft delete: ")
                 if phone_number.isdigit() and (len(phone_number) == 12 or len(phone_number)== 13) :
                     break
                 else:
@@ -286,9 +286,21 @@ def soft_delete(dict_config, email=None, phone_number=None):
 
         if filtered_df_main.empty:
             print(f"The contact data of {phone_number} is not found!")
-            break
+            # 4. loop untuk cari lagi
+            while True:
+                cari_lagi = input("Try again? (y/n) :")
+                if cari_lagi.lower() == "y":
+                    while True:
+                        phone_number = input_not_null("Please enter phone number to soft delete: ")
+                        if phone_number.isdigit() and (len(phone_number) == 12 or len(phone_number)== 13) :
+                            break
+                        else:
+                            print("Input Invalid!")
+                    break
+                elif cari_lagi.lower() == "n":
+                    return
         else:
-            print(f"1. Soft delete {phone_number}")
+            print(f"1. Soft delete {phone_number} on main data")
             print("2. Cancel")
             del_option = input_choose_num("Please select option (1-2): ",1,2)
             if del_option == 1:
@@ -300,57 +312,3 @@ def soft_delete(dict_config, email=None, phone_number=None):
                 print("Cancel soft delete!")
                 return
 
-
-
-
-    # print("")
-    # stop_loop = False # untuk control keluar nested loop
-    # while True:
-            
-    #     # validasi input nomor hp
-    #     while True:
-    #         nomor_hp = input("Masukan nomor HP untuk mencari data yang akan dihapus : ")
-    #         if nomor_hp.isdigit() and (len(nomor_hp) == 12 or len(nomor_hp)== 13) :
-    #             #print("aman")
-    #             break
-    #         else:
-    #             print("Nomor HP tidak valid! (harus 12 atau 13 digit)")
-        
-    #     # 2nd loop untuk cari nomor hp
-    #     for i in range(0,len(database)):
-
-    #         if database[i]["phone_number"] == nomor_hp:
-    #             dict_old_fil_database= show_filtered_database(nomor_hp,dict_config)
-    #             dict_old_fil_database= dict_old_fil_database[0]
-
-    #             while True:
-    #                 del_option = input(f"Ingin menghapus data {nomor_hp}? (y/n) :")
-    #                 if del_option.lower() == "y":
-
-    #                     # menyimpan data yang terhapus ke recycle bin
-    #                     send_to_recycle_bin(dict_config,dict_old_fil_database["email"],dict_old_fil_database["phone_number"] )
-
-    #                     # delete database
-    #                     delete_permanen(dict_config, database[i]["email"], nomor_hp, True)
-    #                     print("Data sukses dihapus dan masuk recycle bin!")
-    #                     return
-
-    #                 elif del_option.lower() == "n":
-    #                     print(f"Cancel Hapus data {nomor_hp}")
-    #                     break
-
-    #             stop_loop = True
-    #             break
-    #     else:
-    #         print("Nomor HP tidak ditemukan!")
-    #         # loop untuk cari lagi
-    #         while True:
-    #             cari_lagi = input("Ingin mencari lagi? (y/n) :")
-    #             if cari_lagi.lower() == "y":
-    #                 break
-    #             elif cari_lagi.lower() == "n":
-    #                 stop_loop=True
-    #                 break
-
-    #     if stop_loop:
-    #         break

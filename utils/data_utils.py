@@ -28,7 +28,6 @@ def input_not_null(prompt:str) -> str:
     """Funtion to validate and create not null input
     Args:
         prompt (str): promt for input
-
     Returns:
         str: value input
     """
@@ -136,98 +135,182 @@ def show_database(dict_config):
     finally: # code yang selalu dijalankan meskipun error atau tidak
         conn.close()
 
+
 def filter_database(dict_config):
-    """Filter Database berdasarkan menu pilihan
+    """Filter Database based on selected menu.
     """
-    database = get_database_info(dict_config)
-    df = pd.DataFrame(database)
     
-
-def filter_database(dict_config):
-    """Filter Database berdasarkan menu pilihan
-    """
     database = get_database_info(dict_config)
     df = pd.DataFrame(database)
-    option = None
 
-    menu = ["Find with phone_number",
-            "Find with email",
-            "Find with full_name",
-            "Find with nickname",
-            "Find with gender",
-            "Find with state",
-            "Find with city",
-            "Find with category",
-            "Return to main menu"]
-    print("")
-    for i, val in enumerate(menu):
-        i += 1
-        print(f"{i}. {val}")
+    menu_options = {
+        1: "phone_number",
+        2: "email",
+        3: "full_name",
+        4: "nickname",
+        5: "gender",
+        6: "state",
+        7: "city",
+        8: "category",
+        9: "Exit"
+    }
 
-    while option != 9:
-        option = input_choose_num("Please enter number 1-9: ",min=1, max=9)
-        selected_menu = menu[option-1].split()[-1]
+    while True:
+        print("\nPelase select search method:")
+        for key, value in menu_options.items():
+            print(f"{key}. Search by {value.replace('_', ' ').title()}")
 
-        if option == 1:
-            phone = input_not_null("Please enter phone number: ")
-            while phone.isdigit()!= True and (len(phone) != 12 or len(phone) != 13):
-                print("Input Invalid!")
-                phone = input_not_null("Please enter phone number: ")
-            filtered_df = df[df[selected_menu].str.contains(phone, case=False, na=False)]
-            print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+        option = input_choose_num("Enter a number (1-9): ", min=1, max=9)
+
+        if option == 9:
             return
 
-        elif option == 2:
-            email = input_not_null("Please enter email: ")
-            filtered_df = df[df[selected_menu].str.contains(email, case=False, na=False)]
-            print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
-            return
+        selected_field = menu_options[option]
 
-        elif option == 3:
-            full_name = input_not_null("Please enter full name: ")
-            filtered_df = df[df[selected_menu].str.contains(full_name, case=False, na=False)]
-            print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
-            return
+        if selected_field == "gender":
+            print("1. Male\n2. Female")
+            gender_choice = input_choose_num("Choose 1 or 2: ", min=1, max=2)
+            search_value = "Male" if gender_choice == 1 else "Female"
+            filtered_df = df[df[selected_field] == search_value]
 
-        elif option == 4:
-            nickname = input_not_null("Please enter nickname: ")
-            filtered_df = df[df[selected_menu].str.contains(nickname, case=False, na=False)]
-            print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
-            return
+        elif selected_field == "category":
+            categories = df["category"].unique()
+            for i, category in enumerate(categories, start=1):
+                print(f"{i}. {category}")
+            category_choice = input_choose_num(f"Enter a number (1-{len(categories)}): ", min=1, max=len(categories))
+            search_value = categories[category_choice - 1]
+            filtered_df = df[df[selected_field] == search_value]
 
-        elif option == 5:
-            print("1. Male")
-            print("2. Female")
-            gender = input_choose_num("Please choose 1 or 2: ",1,2)
-            if gender == 1:
-                gender = "Male"
-            elif gender == 2:
-                gender = "Female"
-            print(tabulate(df[df[selected_menu]==gender], headers="keys", tablefmt="pipe"))
-            return
-
-        elif option == 6:
-            state = input_not_null("Please enter state: ")
-            filtered_df = df[df[selected_menu].str.contains(state, case=False, na=False)]
-            print(tabulate(filtered_df, headers="keys", tablefmt="pipe")) 
-            return
-
-        elif option == 7:
-            city = input_not_null("Please enter city: ")
-            filtered_df = df[df[selected_menu].str.contains(city, case=False, na=False)]
-            print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
-            return
-
-        elif option == 8:
-            array_category = df["category"].unique()
-            for i, val in enumerate(array_category):
-                print(f"{i+1} {val}")
-            num_category = input_choose_num(f"Please enter 1-{i+1}: ",min=1, max=i+1)
-            selected_category = array_category[num_category-1]
-            print(tabulate(df[df[selected_menu]==selected_category], headers="keys", tablefmt="pipe"))
-            return
-
-        elif option == 9:
-            return
         else:
-            print("Input Invalid!")
+            search_value = input_not_null(f"Enter {selected_field.replace('_', ' ')}: ")
+
+            if selected_field == "phone_number":
+                while not search_value.isdigit() or len(search_value) not in (12, 13):
+                    print("Input is not valid!")
+                    search_value = input_not_null("Enter phone number: ")
+
+            filtered_df = df[df[selected_field].str.contains(search_value, case=False, na=False)]
+
+        if filtered_df.empty:
+            print(f"{selected_field.replace('_', ' ').title()} is not found!")
+        else:
+            print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+            return
+
+
+
+
+
+# def filter_database(dict_config):
+#     """Filter Database with selected menu
+#     """
+#     database = get_database_info(dict_config)
+#     df = pd.DataFrame(database)
+#     option = None
+
+#     while option != 9:
+#         menu = ["Find with phone_number",
+#                 "Find with email",
+#                 "Find with full_name",
+#                 "Find with nickname",
+#                 "Find with gender",
+#                 "Find with state",
+#                 "Find with city",
+#                 "Find with category",
+#                 "Return to main menu"]
+#         print("")
+#         for i, val in enumerate(menu):
+#             i += 1
+#             print(f"{i}. {val}")
+    
+#         option = input_choose_num("Please enter number 1-9: ",min=1, max=9)
+#         selected_menu = menu[option-1].split()[-1]
+
+#         if option == 1:
+#             phone = input_not_null("Please enter phone number: ")
+#             while phone.isdigit()!= True and (len(phone) != 12 or len(phone) != 13):
+#                 print("Input Invalid!")
+#                 phone = input_not_null("Please enter phone number: ")
+#             filtered_df = df[df[selected_menu].str.contains(phone, case=False, na=False)]
+#             if filtered_df.empty:
+#                 print(f"the {selected_menu} is not found!")
+#             else:
+#                 print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+#                 return
+
+#         elif option == 2:
+#             email = input_not_null("Please enter email: ")
+#             filtered_df = df[df[selected_menu].str.contains(email, case=False, na=False)]
+#             if filtered_df.empty:
+#                 print(f"the {selected_menu} is not found!")
+#             else:
+#                 print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+#                 return
+
+#         elif option == 3:
+#             full_name = input_not_null("Please enter full name: ")
+#             filtered_df = df[df[selected_menu].str.contains(full_name, case=False, na=False)]
+#             if filtered_df.empty:
+#                 print(f"the {selected_menu} is not found!")
+#             else:
+#                 print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+#                 return
+
+#         elif option == 4:
+#             nickname = input_not_null("Please enter nickname: ")
+#             filtered_df = df[df[selected_menu].str.contains(nickname, case=False, na=False)]
+#             if filtered_df.empty:
+#                 print(f"the {selected_menu} is not found!")
+#             else:
+#                 print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+#                 return
+
+#         elif option == 5:
+#             print("1. Male")
+#             print("2. Female")
+#             gender = input_choose_num("Please choose 1 or 2: ",1,2)
+#             if gender == 1:
+#                 gender = "Male"
+#             elif gender == 2:
+#                 gender = "Female"
+#             filtered_df= df[df[selected_menu]==gender]
+#             if filtered_df.empty:
+#                 print(f"the {selected_menu} is not found!")
+#             else:
+#                 print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+#                 return
+
+#         elif option == 6:
+#             state = input_not_null("Please enter state: ")
+#             filtered_df = df[df[selected_menu].str.contains(state, case=False, na=False)]
+#             if filtered_df.empty:
+#                 print(f"the {selected_menu} is not found!")
+#             else:
+#                 print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+#                 return
+
+#         elif option == 7:
+#             city = input_not_null("Please enter city: ")
+#             filtered_df = df[df[selected_menu].str.contains(city, case=False, na=False)]
+#             if filtered_df.empty:
+#                 print(f"the {selected_menu} is not found!")
+#             else:
+#                 print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+#                 return
+
+#         elif option == 8:
+#             array_category = df["category"].unique()
+#             for i, val in enumerate(array_category):
+#                 print(f"{i+1} {val}")
+#             num_category = input_choose_num(f"Please enter 1-{i+1}: ",min=1, max=i+1)
+#             selected_category = array_category[num_category-1]
+#             if filtered_df.empty:
+#                 print(f"the {selected_menu} is not found!")
+#             else:
+#                 print(tabulate(filtered_df, headers="keys", tablefmt="pipe"))
+#                 return
+
+#         elif option == 9:
+#             return
+#         else:
+#             print("Input Invalid!")

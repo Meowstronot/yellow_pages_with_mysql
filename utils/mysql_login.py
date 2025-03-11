@@ -15,10 +15,8 @@ file_path = os.path.join(script_dir, file_name)
 
 def cek_file(file_path)->bool:
     """Function to check if a file exists or not.
-    
     Args:
         file_path (str): The file location in local storage.
-    
     Returns:
         bool: True if the file exists, False if the file does not exist.
     """
@@ -139,7 +137,6 @@ def reset_login_info():
 
 def mysql_configuration()->dict:
     """Function to generate MySQL configuration csv file
-
     Returns:
         dict: MySQL configuration
     """
