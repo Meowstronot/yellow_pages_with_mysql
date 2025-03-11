@@ -48,11 +48,11 @@ Yellow Pages is a personal contact management application designed to help indiv
     pip install -r requirements.txt 
     ```
 3. **MySQL Preparation**
-    1. Open and login MySQL Workbench on your computer
-    2. Go to File → Open SQL Script
-    3. Find and Select file ```yellow_pages_schema.sql``` 
-    4. Click the icon⚡Execute (Run Current SQL Script)  or press (Ctrl + Shift + Enter)
-    5. Wait until the execution process is complete.
+    - a. Open and login MySQL Workbench on your computer 
+    - b. Go to File → Open SQL Script 
+    - c. Find and Select file ```yellow_pages_schema.sql```  
+    - d. Click the icon⚡Execute (Run Current SQL Script)  or press (Ctrl + Shift + Enter)
+    - e. Wait until the execution process is complete. 
 
 ## Usage
 
