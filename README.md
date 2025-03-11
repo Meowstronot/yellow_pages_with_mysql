@@ -127,14 +127,14 @@ I'm welcoming contributions to this project! Please feel free to open a pull req
   <table>
     <tr>
       <td align="center">
-        <a href="https://www.linkedin.com/">
+        <a href="https://www.linkedin.com/in/muhammad-khisanul-fakhrudin-akbar-3899ba220/">
           <img src="https://i.sstatic.net/gVE0j.png" width="20"/><br>
           <strong>LinkedIn</strong>
         </a>
       </td>
       <td width="50">&nbsp;</td> <!-- Memberikan jarak antar ikon -->
       <td align="center">
-        <a href="https://github.com/">
+        <a href="https://github.com/Meowstronot">
           <img src="https://i.sstatic.net/tskMh.png" width="20"/><br>
           <strong>GitHub</strong>
         </a>
