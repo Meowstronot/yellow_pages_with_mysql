@@ -48,11 +48,11 @@ Yellow Pages is a personal contact management application designed to help indiv
     pip install -r requirements.txt 
     ```
 3. **MySQL Preparation**
-    a. Open and login MySQL Workbench on your computer
-    b. Go to File → Open SQL Script
-    c. Find and Select file ```yellow_pages_schema.sql``` 
-    d. Click the icon⚡Execute (Run Current SQL Script)  or press (Ctrl + Shift + Enter)
-    e. Wait until the execution process is complete.
+    1. Open and login MySQL Workbench on your computer
+    2. Go to File → Open SQL Script
+    3. Find and Select file ```yellow_pages_schema.sql``` 
+    4. Click the icon⚡Execute (Run Current SQL Script)  or press (Ctrl + Shift + Enter)
+    5. Wait until the execution process is complete.
 
 ## Usage
 
@@ -74,7 +74,7 @@ Yellow Pages is a personal contact management application designed to help indiv
 
 ## Other Information
 1. **Table MySQL**
-    * `profil`
+    * `profil` <br>
     This table contains personal details of individuals stored in the contact list.
         |Column|	Data Type|	Description|
         --- | --- | --- |
@@ -86,7 +86,7 @@ Yellow Pages is a personal contact management application designed to help indiv
         |city|VARCHAR(50)|City where the contact resides.|
         |address|VARCHAR(50)|Full address of the contact (optional).|
 
-    * `contact` 
+    * `contact` <br>
     This table holds contact details, linking phone numbers to emails from the `profil` table.
         |Column|	Data Type|	Description|
         --- | --- | --- |
@@ -99,7 +99,7 @@ Yellow Pages is a personal contact management application designed to help indiv
         Cascade Rules:
         - If a profile is deleted, all associated contact records are also deleted (ON DELETE CASCADE).
         - If an email is updated in `profil`, it automatically updates in `contact` (ON UPDATE CASCADE).
-    * `category` 
+    * `category` <br>
     This table classifies contacts into categories and keeps track of updates.
         |Column|	Data Type|	Description|
         --- | --- | --- |
@@ -111,7 +111,7 @@ Yellow Pages is a personal contact management application designed to help indiv
         Cascade Rules:
         - If a phone number is deleted from `contact`, it is also removed from `category` (ON DELETE CASCADE).
         - If a phone number is updated, it updates automatically here (ON UPDATE CASCADE).
-    * `recycle_bin` 
+    * `recycle_bin` <br>
     This table serves as a temporary storage for deleted contacts before they are permanently removed.
 
 2. **Relational Database (RDB)**
